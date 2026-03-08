@@ -1,4 +1,5 @@
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 #include <iostream>
@@ -16,6 +17,9 @@
 // xp_orbs wali file ko include kiya (orbs + score)
 #include "xp_orbs.h"
 
+// sounds wali file ko include kiya (procedural audio)
+#include "sounds.h"
+
 int main() {
   unsigned mapW = (unsigned)baseMap[0].size();
   unsigned mapH = (unsigned)baseMap.size();
@@ -29,6 +33,12 @@ int main() {
 
   // Load font for score display
   sf::Font font("C:/Windows/Fonts/arial.ttf");
+
+  // Create sound buffers and sound objects
+  sf::SoundBuffer bBlop = makeBlopSound(), bPow = makePowerupSound(),
+                  bShld = makeShieldSound(), bEat = makeGhostEatSound(),
+                  bDth = makeDeathSound(), bWin = makeWinSound();
+  sf::Sound sBlop(bBlop), sPow(bPow), sShld(bShld), sEat(bEat), sDth(bDth), sWin(bWin);
 
   // game starts
   Entity pacman;
@@ -67,8 +77,11 @@ int main() {
     handlePacmanInput(pacman);
     moveEntity(pacman, PACMAN_SPEED, false, dt, uiOffset, mapW);
 
-    // Collect orbs that Pac-Man touches
+    // Collect orbs that Pac-Man touches and play blop sound
+    size_t orbsBefore = orbs.size();
     collectOrbs(orbs, pacman.pos, score);
+    if (orbs.size() < orbsBefore && sBlop.getStatus() != sf::Sound::Status::Playing)
+      sBlop.play();
 
     window.clear(sf::Color::Black);
 
@@ -87,3 +100,4 @@ int main() {
   }
   return 0;
 }
+
