@@ -1,32 +1,25 @@
-// GhostVisuals.h
 #pragma once
 
 #include "ghost_direction_and_visual_p1.h"
 
-// ─────────────────────────────────────────────
-//  Ghost Body + Expression Renderer
-// ─────────────────────────────────────────────
 inline void drawGhost(sf::RenderWindow &window, sf::Vector2f pos,
                       sf::Color color, Direction dir,
                       int mood, float animTime, float tileSize)
 {
     float radius = tileSize / 2.0f * 0.8f;
 
-    // Dome
     sf::CircleShape dome(radius);
     dome.setOrigin({radius, radius});
     dome.setPosition(pos);
     dome.setFillColor(color);
     window.draw(dome);
 
-    // Body
     sf::RectangleShape body({radius * 2, radius});
     body.setOrigin({radius, 0});
     body.setPosition(pos);
     body.setFillColor(color);
     window.draw(body);
 
-    // Animated skirt (3 triangular frills)
     float offset = std::sin(animTime * 15.0f) * 1.5f;
     sf::VertexArray tri(sf::PrimitiveType::Triangles, 9);
     float w = (radius * 2) / 3.0f;
@@ -38,7 +31,6 @@ inline void drawGhost(sf::RenderWindow &window, sf::Vector2f pos,
     }
     window.draw(tri);
 
-    // Eye look direction
     sf::Vector2f lk(0, 0);
     if (dir == Direction::Left)  lk.x = -1.5f;
     if (dir == Direction::Right) lk.x =  1.5f;
@@ -60,9 +52,7 @@ inline void drawGhost(sf::RenderWindow &window, sf::Vector2f pos,
         window.draw(pupil);
     }
 
-    // Mood overlays
     if (mood == 1) {
-        // Angry brows
         sf::RectangleShape brow({5.0f, 1.5f});
         brow.setFillColor(sf::Color::Black);
         brow.setOrigin({2.5f, 0.75f});
@@ -74,7 +64,6 @@ inline void drawGhost(sf::RenderWindow &window, sf::Vector2f pos,
         window.draw(brow);
     }
     else if (mood == 2) {
-        // Devil horns
         sf::ConvexShape horn(3);
         horn.setPoint(0, {0, 0});
         horn.setPoint(1, {2, 0});
@@ -87,9 +76,6 @@ inline void drawGhost(sf::RenderWindow &window, sf::Vector2f pos,
     }
 }
 
-// ─────────────────────────────────────────────
-//  Confused Star Orbit Effect
-// ─────────────────────────────────────────────
 inline void drawConfusedStars(sf::RenderWindow &window,
                                sf::Vector2f ghostPos, float animTime)
 {
