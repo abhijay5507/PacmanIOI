@@ -11,14 +11,7 @@
 #include <string>
 #include <vector>
 
-enum class Direction
-{
-  None,
-  Up,
-  Down,
-  Left,
-  Right
-};
+#include "ghost_direction.h"
 
 enum class GameState
 {
@@ -57,7 +50,6 @@ struct Entity
   Direction currentDir = Direction::None;
   Direction queuedDir = Direction::None;
   sf::Color color;
-  int ghostIndex = -1;  // -1 for Pacman, 0-3 for ghosts
 };
 
 inline std::vector<std::string> baseMap = {
@@ -78,7 +70,7 @@ inline std::vector<std::string> baseMap = {
     "# ########## ## ########## #", "#                          #",
     "############################"};
 
-inline bool isWall(int x, int y)
+inline bool isWall(int x, int y, bool isGhost = false)
 {
   int mapW = (int)baseMap[0].size();
 
@@ -90,30 +82,11 @@ inline bool isWall(int x, int y)
   if (y < 0 || y >= (int)baseMap.size())
     return true;
 
+  if (isGhost && baseMap[y][x] == '-') return false;
   return baseMap[y][x] == '#' || baseMap[y][x] == '-';
 }
 
-inline sf::Vector2f getDirectionVector(Direction dir)
-{
-  switch (dir)
-  {
-  case Direction::Up:
-    return {0, -1};
-  case Direction::Down:
-    return {0, 1};
-  case Direction::Left:
-    return {-1, 0};
-  case Direction::Right:
-    return {1, 0};
-  default:
-    return {0, 0};
-  }
-}
 
-inline float calcDist(sf::Vector2f a, sf::Vector2f b)
-{
-  return std::hypot(a.x - b.x, a.y - b.y);
-}
 
 inline sf::VertexArray createThickArc(sf::Vector2f center, float radius,
                                       float thickness, float startAngle,

@@ -2,8 +2,7 @@
 
 #include "globals.h"
 
-inline void handlePacmanInput(Entity &pacman)
-{
+inline void handlePacmanInput(Entity &pacman) {
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) ||
       sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
     pacman.queuedDir = Direction::Up;
@@ -18,9 +17,8 @@ inline void handlePacmanInput(Entity &pacman)
     pacman.queuedDir = Direction::Right;
 }
 
-inline void moveEntity(Entity &e, float spd, float dt,
-                       float uiOffset, unsigned mapW)
-{
+inline void moveEntity(Entity &e, float spd, float dt, float uiOffset,
+                       unsigned mapW) {
   int gx = (int)(e.pos.x / TILE_SIZE);
   int gy = (int)((e.pos.y - uiOffset) / TILE_SIZE);
 
@@ -29,12 +27,10 @@ inline void moveEntity(Entity &e, float spd, float dt,
 
   sf::Vector2f toC = tc - e.pos;
   sf::Vector2f cDir = getDirectionVector(e.currentDir);
-  bool towards = (toC.x * cDir.x + toC.y * cDir.y) >
-                 0;
+  bool towards = (toC.x * cDir.x + toC.y * cDir.y) > 0;
 
   if (calcDist(e.pos, tc) < 0.1f ||
-      (towards && calcDist(e.pos, tc) <= spd * dt))
-  {
+      (towards && calcDist(e.pos, tc) <= spd * dt)) {
     e.pos = tc;
     auto qv = getDirectionVector(e.queuedDir);
     if (!isWall(gx + (int)qv.x, gy + (int)qv.y))
@@ -43,9 +39,7 @@ inline void moveEntity(Entity &e, float spd, float dt,
                     gy + (int)getDirectionVector(e.currentDir).y))
       e.currentDir = Direction::None;
     e.pos += getDirectionVector(e.currentDir) * spd * dt;
-  }
-  else
-  {
+  } else {
     e.pos += cDir * spd * dt;
   }
 
